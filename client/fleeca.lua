@@ -1,7 +1,9 @@
-QBCore = exports['qb-core']:GetCoreObject()
+local QBCore = exports['qb-core']:GetCoreObject()
+
 isLoggedIn = LocalPlayer.state['isLoggedIn']
 currentThermiteGate = 0
 CurrentCops = 0
+IsDrilling = false
 local closestBank = 0
 local inElectronickitZone = false
 local copsCalled = false
@@ -137,17 +139,19 @@ function openLocker(bankId, lockerId) -- Globally Used
                     TriggerServerEvent('qb-bankrobbery:server:setLockerState', bankId, lockerId, 'isOpened', true)
                     TriggerServerEvent('qb-bankrobbery:server:setLockerState', bankId, lockerId, 'isBusy', false)
                     TriggerServerEvent('qb-bankrobbery:server:recieveItem', 'paleto')
-                    --QBCore.Functions.Notify("Successful!", "success")
-                    exports['okokNotify']:Alert('SUccessful!', 'You successfully did it!', 3000, 'success')
-                    IsDrilling = false
+                    QBCore.Functions.Notify("Successful!", "success")
+                    SetTimeout(500, function()
+                        IsDrilling = false
+                    end)
                 end, function() -- Cancel
                     StopAnimTask(ped, "anim@heists@fleeca_bank@drilling", "drill_straight_idle", 1.0)
                     TriggerServerEvent('qb-bankrobbery:server:setLockerState', bankId, lockerId, 'isBusy', false)
                     DetachEntity(DrillObject, true, true)
                     DeleteObject(DrillObject)
-                    --QBCore.Functions.Notify("Canceled..", "error")
-                    exports['okokNotify']:Alert('Canceled', "You canceled the action", 3000, 'error')
-                    IsDrilling = false
+                    QBCore.Functions.Notify("Canceled..", "error")
+                    SetTimeout(500, function()
+                        IsDrilling = false
+                    end)
                 end)
                 CreateThread(function()
                     while IsDrilling do
@@ -182,17 +186,19 @@ function openLocker(bankId, lockerId) -- Globally Used
                     TriggerServerEvent('qb-bankrobbery:server:setLockerState', bankId, lockerId, 'isOpened', true)
                     TriggerServerEvent('qb-bankrobbery:server:setLockerState', bankId, lockerId, 'isBusy', false)
                     TriggerServerEvent('qb-bankrobbery:server:recieveItem', 'pacific')
-                    --QBCore.Functions.Notify("Successful!", "success")
-                    exports['okokNotify']:Alert('Successful!', 'You successfully did it!', 3000, 'success')
-                    IsDrilling = false
+                    QBCore.Functions.Notify("Successful!", "success")
+                    SetTimeout(500, function()
+                        IsDrilling = false
+                    end)
                 end, function() -- Cancel
                     StopAnimTask(ped, "anim@heists@fleeca_bank@drilling", "drill_straight_idle", 1.0)
                     TriggerServerEvent('qb-bankrobbery:server:setLockerState', bankId, lockerId, 'isBusy', false)
                     DetachEntity(DrillObject, true, true)
                     DeleteObject(DrillObject)
-                    --QBCore.Functions.Notify("Canceled..", "error")
-                    exports['okokNotify']:Alert('Canceled', "You canceled the action", 3000, 'error')
-                    IsDrilling = false
+                    QBCore.Functions.Notify("Canceled..", "error")
+                    SetTimeout(500, function()
+                        IsDrilling = false
+                    end)
                 end)
                 CreateThread(function()
                     while IsDrilling do
@@ -222,15 +228,17 @@ function openLocker(bankId, lockerId) -- Globally Used
             TriggerServerEvent('qb-bankrobbery:server:setLockerState', bankId, lockerId, 'isOpened', true)
             TriggerServerEvent('qb-bankrobbery:server:setLockerState', bankId, lockerId, 'isBusy', false)
             TriggerServerEvent('qb-bankrobbery:server:recieveItem', 'small')
-            --QBCore.Functions.Notify("Successful!", "success")
-            exports['okokNotify']:Alert('Successful!', 'You successfully did it!', 3000, 'success')
-            IsDrilling = false
+            QBCore.Functions.Notify("Successful!", "success")
+            SetTimeout(500, function()
+                IsDrilling = false
+            end)
         end, function() -- Cancel
             StopAnimTask(ped, "anim@gangops@facility@servers@", "hotwire", 1.0)
             TriggerServerEvent('qb-bankrobbery:server:setLockerState', bankId, lockerId, 'isBusy', false)
-            --QBCore.Functions.Notify("Canceled..", "error")
-            exports['okokNotify']:Alert('Canceled', "You canceled the action", 3000, 'error')
-            IsDrilling = false
+            QBCore.Functions.Notify("Canceled..", "error")
+            SetTimeout(500, function()
+                IsDrilling = false
+            end)
         end)
         CreateThread(function()
             while IsDrilling do
@@ -364,9 +372,9 @@ end)
 RegisterNetEvent('qb-bankrobbery:client:robberyCall', function(type, key, streetLabel, coords)
     if not isLoggedIn then return end
     local PlayerJob = QBCore.Functions.GetPlayerData().job
-    if PlayerJob.name == "police" and PlayerJob.onDuty then
-        local cameraId = 4
-        local bank = "Fleeca"
+    if PlayerJob.name == "police" and PlayerJob.onduty then
+        local cameraId
+        local bank
         if type == "small" then
             cameraId = Config.SmallBanks[key]["camId"]
             bank = "Fleeca"
@@ -556,7 +564,7 @@ CreateThread(function()
                                 openLocker(closestBank, k)
                             end,
                             canInteract = function()
-                                return closestBank ~= 0 and Config.SmallBanks[i]["isOpened"] and not Config.SmallBanks[i]["lockers"][k]["isOpened"] and not Config.SmallBanks[i]["lockers"][k]["isBusy"]
+                                return closestBank ~= 0 and not IsDrilling and Config.SmallBanks[i]["isOpened"] and not Config.SmallBanks[i]["lockers"][k]["isOpened"] and not Config.SmallBanks[i]["lockers"][k]["isBusy"]
                             end,
                             icon = 'fa-solid fa-vault',
                             label = 'Break Safe Open',
@@ -573,7 +581,7 @@ CreateThread(function()
                     debugPoly = false
                 })
                 lockerZone:onPlayerInOut(function(inside)
-                    if inside and closestBank ~= 0 and Config.SmallBanks[i]["isOpened"] and not Config.SmallBanks[i]["lockers"][k]["isOpened"] and not Config.SmallBanks[i]["lockers"][k]["isBusy"] then
+                    if inside and closestBank ~= 0 and not IsDrilling and Config.SmallBanks[i]["isOpened"] and not Config.SmallBanks[i]["lockers"][k]["isOpened"] and not Config.SmallBanks[i]["lockers"][k]["isBusy"] then
                         exports['qb-core']:DrawText('[E] Break open the safe', 'right')
                         currentLocker = k
                     else
@@ -590,19 +598,20 @@ CreateThread(function()
         while true do
             local sleep = 1000
             if isLoggedIn then
-                if currentLocker ~= 0 then
-                    sleep = 0
-                    if IsControlJustPressed(0, 38) then
-                        exports['qb-core']:KeyPressed()
-                        Wait(500)
-                        exports['qb-core']:HideText()
-                        if CurrentCops >= Config.MinimumFleecaPolice then
-                            openLocker(closestBank, currentLocker)
-                        else
-                            --QBCore.Functions.Notify('Minimum Of '..Config.MinimumFleecaPolice..' Police Needed', "error")
-                            exports['okokNotify']:Alert('Not enough Cops', 'Minimum of '..Config.MinimumFleecaPolice..' Police Needed', 3000, 'error')
+                for i = 1, #Config.SmallBanks do
+                    if currentLocker ~= 0 and not IsDrilling and Config.SmallBanks[i]["isOpened"] and not Config.SmallBanks[i]["lockers"][currentLocker]["isOpened"] and not Config.SmallBanks[i]["lockers"][currentLocker]["isBusy"] then
+                        sleep = 0
+                        if IsControlJustPressed(0, 38) then
+                            exports['qb-core']:KeyPressed()
+                            Wait(500)
+                            exports['qb-core']:HideText()
+                            if CurrentCops >= Config.MinimumFleecaPolice then
+                                openLocker(closestBank, currentLocker)
+                            else
+                                QBCore.Functions.Notify('Minimum Of '..Config.MinimumFleecaPolice..' Police Needed', "error")
+                            end
+                            sleep = 1000
                         end
-                        sleep = 1000
                     end
                 end
             end

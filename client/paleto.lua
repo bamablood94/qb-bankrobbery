@@ -1,5 +1,8 @@
+local QBCore = exports['qb-core']:GetCoreObject()
+
 local inBankCardAZone = false
 local currentLocker = 0
+local copsCalled = false
 
 -- Events
 
@@ -14,7 +17,7 @@ RegisterNetEvent('qb-bankrobbery:UseBankcardA', function()
         if not isBusy then
             if CurrentCops >= Config.MinimumPaletoPolice then
                 if not Config.BigBanks["paleto"]["isOpened"] then
-                    TriggerEvent('inventory:client:requiredItems', requiredItems, false)
+                    TriggerEvent('inventory:client:requiredItems', nil, false)
                     QBCore.Functions.Progressbar("security_pass", "Validitating card..", math.random(5000, 10000), false, true, {
                         disableMovement = true,
                         disableCarMovement = true,
@@ -116,7 +119,7 @@ CreateThread(function()
                             openLocker("paleto", k)
                         end,
                         canInteract = function()
-                            return Config.BigBanks["paleto"]["isOpened"] and not Config.BigBanks["paleto"]["lockers"][k]["isBusy"] and not Config.BigBanks["paleto"]["lockers"][k]["isOpened"]
+                            return not IsDrilling and Config.BigBanks["paleto"]["isOpened"] and not Config.BigBanks["paleto"]["lockers"][k]["isBusy"] and not Config.BigBanks["paleto"]["lockers"][k]["isOpened"]
                         end,
                         icon = 'fa-solid fa-vault',
                         label = 'Break Safe Open',
@@ -133,7 +136,7 @@ CreateThread(function()
                 debugPoly = false
             })
             lockerZone:onPlayerInOut(function(inside)
-                if inside and Config.BigBanks["paleto"]["isOpened"] and not Config.BigBanks["paleto"]["lockers"][k]["isBusy"] and not Config.BigBanks["paleto"]["lockers"][k]["isOpened"] then
+                if inside and not IsDrilling and Config.BigBanks["paleto"]["isOpened"] and not Config.BigBanks["paleto"]["lockers"][k]["isBusy"] and not Config.BigBanks["paleto"]["lockers"][k]["isOpened"] then
                     exports['qb-core']:DrawText('[E] Break open the safe', 'right')
                     currentLocker = k
                 else
@@ -149,7 +152,7 @@ CreateThread(function()
         while true do
             local sleep = 1000
             if isLoggedIn then
-                if currentLocker ~= 0 then
+                if currentLocker ~= 0 and not IsDrilling and Config.BigBanks["paleto"]["isOpened"] and not Config.BigBanks["paleto"]["lockers"][currentLocker]["isBusy"] and not Config.BigBanks["paleto"]["lockers"][currentLocker]["isOpened"] then
                     sleep = 0
                     if IsControlJustPressed(0, 38) then
                         exports['qb-core']:KeyPressed()

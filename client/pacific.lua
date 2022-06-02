@@ -1,6 +1,9 @@
+local QBCore = exports['qb-core']:GetCoreObject()
+
 local inBankCardBZone = false
 local inElectronickitZone = false
 local currentLocker = 0
+local copsCalled = false
 
 -- Functions
 
@@ -80,7 +83,7 @@ RegisterNetEvent('electronickit:UseElectronickit', function()
                 if not Config.BigBanks["pacific"]["isOpened"] then
                     QBCore.Functions.TriggerCallback('QBCore:HasItem', function(result)
                         if result then
-                            TriggerEvent('inventory:client:requiredItems', requiredItems, false)
+                            TriggerEvent('inventory:client:requiredItems', nil, false)
                             QBCore.Functions.Progressbar("hack_gate", "Connecting the hacking device ..", math.random(5000, 10000), false, true, {
                                 disableMovement = true,
                                 disableCarMovement = true,
@@ -230,7 +233,7 @@ CreateThread(function()
                             openLocker("pacific", k)
                         end,
                         canInteract = function()
-                            return Config.BigBanks["pacific"]["isOpened"] and not Config.BigBanks["pacific"]["lockers"][k]["isBusy"] and not Config.BigBanks["pacific"]["lockers"][k]["isOpened"]
+                            return not IsDrilling and Config.BigBanks["pacific"]["isOpened"] and not Config.BigBanks["pacific"]["lockers"][k]["isBusy"] and not Config.BigBanks["pacific"]["lockers"][k]["isOpened"]
                         end,
                         icon = 'fa-solid fa-vault',
                         label = 'Break Safe Open',
@@ -247,7 +250,7 @@ CreateThread(function()
                 debugPoly = false
             })
             lockerZone:onPlayerInOut(function(inside)
-                if inside and Config.BigBanks["pacific"]["isOpened"] and not Config.BigBanks["pacific"]["lockers"][k]["isBusy"] and not Config.BigBanks["pacific"]["lockers"][k]["isOpened"] then
+                if inside and not IsDrilling and Config.BigBanks["pacific"]["isOpened"] and not Config.BigBanks["pacific"]["lockers"][k]["isBusy"] and not Config.BigBanks["pacific"]["lockers"][k]["isOpened"] then
                     exports['qb-core']:DrawText('[E] Break open the safe', 'right')
                     currentLocker = k
                 else
@@ -263,7 +266,7 @@ CreateThread(function()
         while true do
             local sleep = 1000
             if isLoggedIn then
-                if currentLocker ~= 0 then
+                if currentLocker ~= 0 and not IsDrilling and Config.BigBanks["pacific"]["isOpened"] and not Config.BigBanks["pacific"]["lockers"][currentLocker]["isBusy"] and not Config.BigBanks["pacific"]["lockers"][currentLocker]["isOpened"] then
                     sleep = 0
                     if IsControlJustPressed(0, 38) then
                         exports['qb-core']:KeyPressed()
