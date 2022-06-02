@@ -39,16 +39,20 @@ RegisterNetEvent('qb-bankrobbery:UseBankcardA', function()
                         copsCalled = true
                     end, function() -- Cancel
                         StopAnimTask(ped, "anim@gangops@facility@servers@", "hotwire", 1.0)
-                        QBCore.Functions.Notify("Canceled..", "error")
+                        --QBCore.Functions.Notify("Canceled..", "error")
+                        exports['okokNotify']:Alert('Canceled', 'You canceled this action', 3000, 'error')
                     end)
                 else
-                    QBCore.Functions.Notify("It looks like the bank is already opened..", "error")
+                    --QBCore.Functions.Notify("It looks like the bank is already opened..", "error")
+                    exports['okokNotify']:Alert('Bank Open', 'It looks like the bank is already opened..', 3000, 'warning')
                 end
             else
-                QBCore.Functions.Notify('Minimum Of '..Config.MinimumPaletoPolice..' Police Needed', "error")
+                --QBCore.Functions.Notify('Minimum Of '..Config.MinimumPaletoPolice..' Police Needed', "error")
+                exports['okokNotify']:Alert('Not Enough Cops', 'Minimum of '..Config.MinimumPaletoPolice..' Police Needed', 3000, 'error')
             end
         else
-            QBCore.Functions.Notify("The security lock is active, the door cannot be opened at the moment..", "error", 5500)
+            --QBCore.Functions.Notify("The security lock is active, the door cannot be opened at the moment..", "error", 5500)
+            exports['okokNotify']:Alert('Lock Active', 'The security lock is active, the door cannot be opened at the moment..', 5500, 'warning')
         end
     end)
 end)
@@ -154,7 +158,8 @@ CreateThread(function()
                         if CurrentCops >= Config.MinimumPaletoPolice then
                             openLocker("paleto", currentLocker)
                         else
-                            QBCore.Functions.Notify('Minimum Of '..Config.MinimumPaletoPolice..' Police Needed', "error")
+                            --QBCore.Functions.Notify('Minimum Of '..Config.MinimumPaletoPolice..' Police Needed', "error")
+                            exports['okokNotify']:Alert('Not Enough Cops', 'Minimum of '..Config.MinimumPaletoPolice..' Police Needed', 3000, 'error')
                         end
                         sleep = 1000
                     end

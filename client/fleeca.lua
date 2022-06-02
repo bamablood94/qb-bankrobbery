@@ -137,14 +137,16 @@ function openLocker(bankId, lockerId) -- Globally Used
                     TriggerServerEvent('qb-bankrobbery:server:setLockerState', bankId, lockerId, 'isOpened', true)
                     TriggerServerEvent('qb-bankrobbery:server:setLockerState', bankId, lockerId, 'isBusy', false)
                     TriggerServerEvent('qb-bankrobbery:server:recieveItem', 'paleto')
-                    QBCore.Functions.Notify("Successful!", "success")
+                    --QBCore.Functions.Notify("Successful!", "success")
+                    exports['okokNotify']:Alert('SUccessful!', 'You successfully did it!', 3000, 'success')
                     IsDrilling = false
                 end, function() -- Cancel
                     StopAnimTask(ped, "anim@heists@fleeca_bank@drilling", "drill_straight_idle", 1.0)
                     TriggerServerEvent('qb-bankrobbery:server:setLockerState', bankId, lockerId, 'isBusy', false)
                     DetachEntity(DrillObject, true, true)
                     DeleteObject(DrillObject)
-                    QBCore.Functions.Notify("Canceled..", "error")
+                    --QBCore.Functions.Notify("Canceled..", "error")
+                    exports['okokNotify']:Alert('Canceled', "You canceled the action", 3000, 'error')
                     IsDrilling = false
                 end)
                 CreateThread(function()
@@ -154,7 +156,8 @@ function openLocker(bankId, lockerId) -- Globally Used
                     end
                 end)
             else
-                QBCore.Functions.Notify("Looks like the safe lock is too strong ..", "error")
+                --QBCore.Functions.Notify("Looks like the safe lock is too strong ..", "error")
+                exports['okokNotify']:Alert('Too Stong', "Looks like the safe lock is too strong ..", 3000, 'warning')
                 TriggerServerEvent('qb-bankrobbery:server:setLockerState', bankId, lockerId, 'isBusy', false)
             end
         end, "drill")
@@ -179,14 +182,16 @@ function openLocker(bankId, lockerId) -- Globally Used
                     TriggerServerEvent('qb-bankrobbery:server:setLockerState', bankId, lockerId, 'isOpened', true)
                     TriggerServerEvent('qb-bankrobbery:server:setLockerState', bankId, lockerId, 'isBusy', false)
                     TriggerServerEvent('qb-bankrobbery:server:recieveItem', 'pacific')
-                    QBCore.Functions.Notify("Successful!", "success")
+                    --QBCore.Functions.Notify("Successful!", "success")
+                    exports['okokNotify']:Alert('Successful!', 'You successfully did it!', 3000, 'success')
                     IsDrilling = false
                 end, function() -- Cancel
                     StopAnimTask(ped, "anim@heists@fleeca_bank@drilling", "drill_straight_idle", 1.0)
                     TriggerServerEvent('qb-bankrobbery:server:setLockerState', bankId, lockerId, 'isBusy', false)
                     DetachEntity(DrillObject, true, true)
                     DeleteObject(DrillObject)
-                    QBCore.Functions.Notify("Canceled..", "error")
+                    --QBCore.Functions.Notify("Canceled..", "error")
+                    exports['okokNotify']:Alert('Canceled', "You canceled the action", 3000, 'error')
                     IsDrilling = false
                 end)
                 CreateThread(function()
@@ -196,7 +201,8 @@ function openLocker(bankId, lockerId) -- Globally Used
                     end
                 end)
             else
-                QBCore.Functions.Notify("Looks like the safe lock is too strong ..", "error")
+                --QBCore.Functions.Notify("Looks like the safe lock is too strong ..", "error")
+                exports['okokNotify']:Alert('Too Stong', "Looks like the safe lock is too strong ..", 3000, 'warning')
                 TriggerServerEvent('qb-bankrobbery:server:setLockerState', bankId, lockerId, 'isBusy', false)
             end
         end, "drill")
@@ -216,12 +222,14 @@ function openLocker(bankId, lockerId) -- Globally Used
             TriggerServerEvent('qb-bankrobbery:server:setLockerState', bankId, lockerId, 'isOpened', true)
             TriggerServerEvent('qb-bankrobbery:server:setLockerState', bankId, lockerId, 'isBusy', false)
             TriggerServerEvent('qb-bankrobbery:server:recieveItem', 'small')
-            QBCore.Functions.Notify("Successful!", "success")
+            --QBCore.Functions.Notify("Successful!", "success")
+            exports['okokNotify']:Alert('Successful!', 'You successfully did it!', 3000, 'success')
             IsDrilling = false
         end, function() -- Cancel
             StopAnimTask(ped, "anim@gangops@facility@servers@", "hotwire", 1.0)
             TriggerServerEvent('qb-bankrobbery:server:setLockerState', bankId, lockerId, 'isBusy', false)
-            QBCore.Functions.Notify("Canceled..", "error")
+            --QBCore.Functions.Notify("Canceled..", "error")
+            exports['okokNotify']:Alert('Canceled', "You canceled the action", 3000, 'error')
             IsDrilling = false
         end)
         CreateThread(function()
@@ -277,20 +285,25 @@ RegisterNetEvent('electronickit:UseElectronickit', function()
                                 SetTimeout(60000 * Config.OutlawCooldown, function() copsCalled = false end)
                             end, function() -- Cancel
                                 StopAnimTask(ped, "anim@gangops@facility@servers@", "hotwire", 1.0)
-                                QBCore.Functions.Notify("Canceled..", "error")
+                                --QBCore.Functions.Notify("Canceled..", "error")
+                                exports['okokNotify']:Alert('Canceled', "You canceled the action", 3000, 'error')
                             end)
                         else
-                            QBCore.Functions.Notify("You're missing an item ..", "error")
+                            --QBCore.Functions.Notify("You're missing an item ..", "error")
+                            exports['okokNotify']:Alert('Missing an Item', "You\'re missing an item", 3000, 'warning')
                         end
                     end, {["trojan_usb"] = 1, ["electronickit"] = 1})
                 else
-                    QBCore.Functions.Notify("Looks like the bank is already open ..", "error")
+                    --QBCore.Functions.Notify("Looks like the bank is already open ..", "error")
+                    exports['okokNotify']:Alert('Bank Open', "Looks like the bank is already open ..", 3000, 'error')
                 end
             else
-                QBCore.Functions.Notify('Minimum Of '..Config.MinimumFleecaPolice..' Police Needed', "error")
+                --QBCore.Functions.Notify('Minimum Of '..Config.MinimumFleecaPolice..' Police Needed', "error")
+                exports['okokNotify']:Alert('Not enough Cops', 'Minimum of '..Config.MinimumFleecaPolice..' Police Needed', 3000, 'error')
             end
         else
-            QBCore.Functions.Notify("The security lock is active, opening the door is currently not possible.", "error", 5500)
+            --QBCore.Functions.Notify("The security lock is active, opening the door is currently not possible.", "error", 5500)
+            exports['okokNotify']:Alert('Lock Active', "The security lock is active, opening the door is currently not possible", 5500, 'warning')
         end
     end)
 end)
@@ -586,7 +599,8 @@ CreateThread(function()
                         if CurrentCops >= Config.MinimumFleecaPolice then
                             openLocker(closestBank, currentLocker)
                         else
-                            QBCore.Functions.Notify('Minimum Of '..Config.MinimumFleecaPolice..' Police Needed', "error")
+                            --QBCore.Functions.Notify('Minimum Of '..Config.MinimumFleecaPolice..' Police Needed', "error")
+                            exports['okokNotify']:Alert('Not enough Cops', 'Minimum of '..Config.MinimumFleecaPolice..' Police Needed', 3000, 'error')
                         end
                         sleep = 1000
                     end

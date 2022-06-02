@@ -391,7 +391,8 @@ QBCore.Functions.CreateUseableItem("thermite", function(source)
 	if Player.Functions.GetItemByName('lighter') then
         TriggerClientEvent("thermite:UseThermite", source)
     else
-        TriggerClientEvent('QBCore:Notify', source, "You're missing ignition source", "error")
+        --TriggerClientEvent('QBCore:Notify', source, "You're missing ignition source", "error")
+        TriggerClientEvent('okokNotify:Alert', source, 'Missing Item', 'You\'re missing the ignition source', 3500, 'error')
     end
 end)
 

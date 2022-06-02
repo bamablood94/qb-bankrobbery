@@ -67,10 +67,12 @@ RegisterNetEvent('thermite:UseThermite', function()
                     })
                     currentStation = closestStation
                 else
-                    QBCore.Functions.Notify("It seems that the fuses have blown.", "error")
+                    --QBCore.Functions.Notify("It seems that the fuses have blown.", "error")
+                    exports['okokNotify']:Alert('Blown Fuses', 'It seems that the fuses have blown', 3000, 'error')
                 end
             else
-                QBCore.Functions.Notify('Minimum Of '..Config.MinimumThermitePolice..' Police Needed', "error")
+                --QBCore.Functions.Notify('Minimum Of '..Config.MinimumThermitePolice..' Police Needed', "error")
+                exports['okokNotify']:Alert('Not Enough Cops', 'Minimum of '..Config.MinimumThermitePolice..' Police Needed', 3000, 'error')
             end
         end
     elseif currentThermiteGate ~= 0 then
@@ -88,7 +90,8 @@ RegisterNetEvent('thermite:UseThermite', function()
                 amount = math.random(5, 10),
             })
         else
-            QBCore.Functions.Notify('Minimum Of '..Config.MinimumThermitePolice..' Police Needed', "error")
+            --QBCore.Functions.Notify('Minimum Of '..Config.MinimumThermitePolice..' Police Needed', "error")
+            exports['okokNotify']:Alert('Not Enough Cops', 'Minimum of '..Config.MinimumThermitePolice..' Police Needed', 3000, 'error')
         end
     end
 end)
@@ -122,17 +125,20 @@ RegisterNUICallback('thermitesuccess', function()
             local time = 3
             local coords = GetEntityCoords(PlayerPedId())
             while time > 0 do
-                QBCore.Functions.Notify("Thermite is going off in " .. time .. "..")
+                --QBCore.Functions.Notify("Thermite is going off in " .. time .. "..")
+                exports['okokNotify']:Alert('Thermite', 'Thermite is going off in ' .. time .. '..', 3000, 'warning')
                 Wait(1000)
                 time -= 1
             end
             local randTime = math.random(10000, 15000)
             CreateFire(coords, randTime)
             if currentStation ~= 0 then
-                QBCore.Functions.Notify("The fuses are broken", "success")
+                --QBCore.Functions.Notify("The fuses are broken", "success")
+                exports['okokNotify']:Alert('Broken Fuses', 'The fuses are broken', 3000, 'success')
                 TriggerServerEvent("qb-bankrobbery:server:SetStationStatus", currentStation, true)
             elseif currentGate ~= 0 then
-                QBCore.Functions.Notify("The door is open", "success")
+                --QBCore.Functions.Notify("The door is open", "success")
+                exports['okokNotify']:Alert('Door open', "The door is open", 3000, 'success')
                 TriggerServerEvent('qb-doorlock:server:updateState', currentGate, false, false, false, true, false, false)
                 currentGate = 0
             end
